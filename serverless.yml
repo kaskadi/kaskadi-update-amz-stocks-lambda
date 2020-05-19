@@ -1,0 +1,52 @@
+service:
+  name: kaskadi-update-amz-stocks-lambda
+
+package:
+  individually: true
+  exclude:
+    - "**/**"
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stackName: ${self:service.name}-stack
+  stage: ${opt:stage, 'prod'}
+  region: eu-central-1
+  deploymentBucket:
+    name: kaskadi-serverless-deployment-bucket
+  apiGateway:
+    restApiId: !ImportValue KaskadiStocksRestAPIGatewayId
+    restApiRootResourceId: !ImportValue KaskadiStocksRestAPIGatewayRootResourceId
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - lambda:InvokeFunction
+      Resource: 'arn:aws:lambda:eu-central-1:374163881813:function:kaskadi-set-stocks-lambda' # not using export/import logic to avoid coupling of stack which could cause troubles with deployment in that case
+
+functions:
+  KaskadiStockUpdate:
+    handler: kaskadi-update-amz-stocks-lambda.handler
+    name: ${self:service.name}
+    layers:
+      - !ImportValue KaskadiEsLayerArn
+      - !ImportValue KaskadiWemaloLayerArn
+    package:
+      include:
+        - 'kaskadi-update-amz-stocks-lambda.js'
+        - 'node_modules/**'
+    environment:
+      WEMALO_TOKEN: ${env:WEMALO_TOKEN}
+      ES_ID: ${env:ES_ID}
+      ES_SECRET: ${env:ES_SECRET}
+      ES_ENDPOINT: ${env:ES_ENDPOINT}
+    events:
+      - http:
+          method: get
+          path: amz/update
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: !ImportValue KaskadiStocksCognitoAuthorizerId
+      - schedule:
+          rate: cron(55 6 ? * MON *) # runs every monday at 6:55AM
+          enabled: true

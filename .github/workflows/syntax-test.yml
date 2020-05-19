@@ -1,0 +1,27 @@
+name: syntax-test
+on:
+  push:
+    branches:
+      - '!master'
+      - '!release/**'
+    paths:
+      - 'serverless.yml'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install dependencies
+      run: npm ci
+    - name: serverless-check
+      uses: kaskadi/action-slscli@master
+      with:
+        command: 'deploy --noDeploy'
+        should_throw: true
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_KEY_SECRET }}
+        WEMALO_TOKEN: ${{ secrets.WEMALO_TOKEN }}
+        ES_ID: ${{ secrets.ES_ID }}
+        ES_SECRET: ${{ secrets.ES_SECRET }}
+        ES_ENDPOINT: ${{ secrets.ES_ENDPOINT }}
