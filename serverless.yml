@@ -29,13 +29,11 @@ functions:
     name: ${self:service.name}
     layers:
       - !ImportValue KaskadiEsLayerArn
-      - !ImportValue KaskadiWemaloLayerArn
     package:
       include:
         - 'kaskadi-update-amz-stocks-lambda.js'
         - 'node_modules/**'
     environment:
-      WEMALO_TOKEN: ${env:WEMALO_TOKEN}
       ES_ID: ${env:ES_ID}
       ES_SECRET: ${env:ES_SECRET}
       ES_ENDPOINT: ${env:ES_ENDPOINT}
