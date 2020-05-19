@@ -75,3 +75,5 @@ async function getStocksData(lastUpdated, marketplace) {
     }
   })
 }
+
+// force
