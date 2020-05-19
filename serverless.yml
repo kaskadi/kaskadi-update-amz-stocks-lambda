@@ -46,5 +46,5 @@ functions:
             type: COGNITO_USER_POOLS
             authorizerId: !ImportValue KaskadiStocksCognitoAuthorizerId
       - schedule:
-          rate: cron(55 6 ? * MON *) # runs every monday at 6:55AM
+          rate: cron(0 7 ? * * *) # runs every day at 7:00AM
           enabled: true
