@@ -29,13 +29,11 @@ functions:
     name: ${self:service.name}
     layers:
       - !ImportValue KaskadiEsLayerArn
-      - !ImportValue KaskadiWemaloLayerArn
     package:
       include:
         - 'kaskadi-update-amz-stocks-lambda.js'
         - 'node_modules/**'
     environment:
-      WEMALO_TOKEN: ${env:WEMALO_TOKEN}
       ES_ID: ${env:ES_ID}
       ES_SECRET: ${env:ES_SECRET}
       ES_ENDPOINT: ${env:ES_ENDPOINT}
@@ -48,5 +46,5 @@ functions:
             type: COGNITO_USER_POOLS
             authorizerId: !ImportValue KaskadiStocksCognitoAuthorizerId
       - schedule:
-          rate: cron(55 6 ? * MON *) # runs every monday at 6:55AM
+          rate: cron(0 7 ? * * *) # runs every day at 7:00AM
           enabled: true
