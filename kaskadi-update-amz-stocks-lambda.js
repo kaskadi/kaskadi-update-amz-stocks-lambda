@@ -62,11 +62,15 @@ async function setStockData(stocks, warehouse) {
 
 async function getStocksData(lastUpdated, marketplace) {
   const MWS = require('mws-client')({
-    AWSAccessKeyId: process.env.AWS_ACCESS_KEY,
+    AWSAccessKeyId: process.env.ACCESS_KEY,
     SellerId: process.env.SELLER_ID,
     MWSAuthToken: process.env.MWS_AUTH_TOKEN
   })
-  const mwsData = await MWS.fulfillmentInventory.listInventorySupply({ QueryStartDateTime: new Date(lastUpdated).toISOString(), ResponseGroup: 'Basic', _marketplace: marketplace })
+  const mwsData = await MWS.fulfillmentInventory.listInventorySupply({
+    QueryStartDateTime: new Date(lastUpdated).toISOString(),
+    ResponseGroup: 'Basic',
+    _marketplace: marketplace
+  })
   return mwsData.ListInventorySupplyResponse.ListInventorySupplyResult.InventorySupplyList.member.map(product => {
     return {
       id: product.SellerSKU,
@@ -75,5 +79,3 @@ async function getStocksData(lastUpdated, marketplace) {
     }
   })
 }
-
-// force
