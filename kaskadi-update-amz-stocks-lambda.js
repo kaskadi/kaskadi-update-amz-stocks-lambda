@@ -1,3 +1,14 @@
+const es = require('aws-es-client')({
+  id: process.env.ES_ID,
+  token: process.env.ES_SECRET,
+  url: process.env.ES_ENDPOINT
+})
+const MWS = require('mws-client')({
+  AWSAccessKeyId: process.env.ACCESS_KEY,
+  SellerId: process.env.SELLER_ID,
+  MWSAuthToken: process.env.MWS_AUTH_TOKEN
+})
+
 module.exports.handler = async (event) => {
   let ids
   let res = {
@@ -17,30 +28,27 @@ module.exports.handler = async (event) => {
   } else {
     ids = Object.keys(require('./marketplaces.js')).map(key => key.toLowerCase())
   }
-  res.body = JSON.stringify(await updateStocks(ids))
+  const stockMap = await Promise.all(ids.map(updateStocks))
+  res.body = JSON.stringify(stockMap.filter(data => data.stocks))
   return res
 }
 
-async function updateStocks (ids) {
-  const es = require('aws-es-client')({
-    id: process.env.ES_ID,
-    token: process.env.ES_SECRET,
-    url: process.env.ES_ENDPOINT
+async function updateStocks (id) {
+  const warehouseId = `amz_${id}` 
+  const warehouse = await es.get({
+    id: warehouseId,
+    index: 'warehouses'
   })
-  let stockMap = {}
-  for (const id of ids) {
-    const warehouse = await es.get({
-      id: `amz_${id}`,
-      index: 'warehouses'
-    })
-    if (warehouse.found) {
-      const lastUpdated = warehouse._source.stockLastUpdated || 1262300400000 // default to 01/01/2015
-      const stocks = await getStocksData(lastUpdated, id.toUpperCase())
-      stockMap[warehouse] = stocks
-      await setStockData(stocks, warehouse)
-    }
+  let res = {
+    id: warehouseId
   }
-  return stockMap
+  if (warehouse.found) {
+    const lastUpdated = warehouse._source.stockLastUpdated || 1262300400000 // default to 01/01/2015
+    const stocks = await getStocksData(lastUpdated, id.toUpperCase())
+    res.stocks = stocks
+    await setStockData(stocks, warehouse)
+  }
+  return res
 }
 
 async function setStockData(stocks, warehouse) {
@@ -61,11 +69,6 @@ async function setStockData(stocks, warehouse) {
 }
 
 async function getStocksData(lastUpdated, marketplace) {
-  const MWS = require('mws-client')({
-    AWSAccessKeyId: process.env.ACCESS_KEY,
-    SellerId: process.env.SELLER_ID,
-    MWSAuthToken: process.env.MWS_AUTH_TOKEN
-  })
   const mwsData = await MWS.fulfillmentInventory.listInventorySupply({
     QueryStartDateTime: new Date(lastUpdated).toISOString(),
     ResponseGroup: 'Basic',

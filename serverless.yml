@@ -41,7 +41,7 @@ functions:
       ACCESS_KEY: ${env:AWS_ACCESS_KEY}
       SELLER_ID: ${env:SELLER_ID}
       MWS_AUTH_TOKEN: ${env:MWS_AUTH_TOKEN}
-    timeout: 15
+    timeout: 120
     events:
       - http:
           method: get
