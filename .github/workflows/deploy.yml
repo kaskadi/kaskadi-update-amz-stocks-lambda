@@ -8,6 +8,7 @@ on:
       - 'serverless.yml'
       - 'kaskadi-update-amz-stocks-lambda.js'
       - 'marketplaces.js'
+      - 'package.json'
 jobs:
   deploy:
     runs-on: ubuntu-latest
