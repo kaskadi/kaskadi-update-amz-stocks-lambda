@@ -37,7 +37,9 @@ async function updateStocks (ids) {
       const lastUpdated = warehouse._source.stockLastUpdated || 1262300400000 // default to 01/01/2015
       const stocks = await getStocksData(lastUpdated, id.toUpperCase())
       stockMap[warehouse] = stocks
-      await setStockData(stocks, warehouse)
+      if (stocks.length > 0) {
+        await setStockData(stocks, warehouse)
+      }
     }
   }
   return stockMap
@@ -71,6 +73,9 @@ async function getStocksData(lastUpdated, marketplace) {
     ResponseGroup: 'Basic',
     _marketplace: marketplace
   })
+  if (!mwsData.ListInventorySupplyResponse) {
+    return []
+  }
   return mwsData.ListInventorySupplyResponse.ListInventorySupplyResult.InventorySupplyList.member.map(product => {
     return {
       id: product.SellerSKU,
