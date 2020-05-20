@@ -1,3 +1,5 @@
+const AWS = require('aws-sdk')
+const lambda = new AWS.Lambda({region: 'eu-central-1'})
 const es = require('aws-es-client')({
   id: process.env.ES_ID,
   token: process.env.ES_SECRET,
@@ -43,7 +45,7 @@ async function updateStocks (id) {
     id: warehouseId
   }
   if (warehouse.found) {
-    const lastUpdated = warehouse._source.stockLastUpdated || 1262300400000 // default to 01/01/2015
+    const lastUpdated = warehouse._source.stockLastUpdated || 1451602800000 // default to 01/01/2016
     const stocks = await getStocksData(lastUpdated, id.toUpperCase())
     res.stocks = stocks
     await setStockData(stocks, warehouse)
@@ -52,8 +54,6 @@ async function updateStocks (id) {
 }
 
 async function setStockData(stocks, warehouse) {
-  const AWS = require('aws-sdk')
-  const lambda = new AWS.Lambda({region: 'eu-central-1'})
   if (stocks.length === 0) {
     return
   }
