@@ -1,5 +1,4 @@
 module.exports = {
-  BR: { name: 'Brazil', sc: 'BR', endpoint: 'mws.amazonservices.com', id: 'A2Q3Y263D00KWC' },
   CA: { name: 'Canada', sc: 'CA', endpoint: 'mws.amazonservices.ca', id: 'A2EUQ1WTGCTBG2' },
   MX: { name: 'Mexico', sc: 'MX', endpoint: 'mws.amazonservices.com.mx', id: 'A1AM78C64UM0Y8' },
   US: { name: 'US', sc: 'US', endpoint: 'mws.amazonservices.com', id: 'ATVPDKIKX0DER' },

@@ -70,10 +70,25 @@ async function getStocksData(lastUpdated, marketplace) {
     ResponseGroup: 'Basic',
     _marketplace: marketplace
   })
-  if (!mwsData.ListInventorySupplyResponse) {
-    return []
+  let response = mwsData.ListInventorySupplyResponse
+  let result = response.ListInventorySupplyResult
+  let NextToken = result.NextToken
+  let stocks = [...processStocksData(result.InventorySupplyList.member)]
+  while (nextToken) {
+    const nextData = await MWS.fulfillmentInventory.listInventorySupplyByNextToken({
+      NextToken,
+      _marketplace: marketplace
+    })
+    response = nextData.ListInventorySupplyByNextTokenResponse
+    result = response.ListInventorySupplyByNextTokenResult
+    NextToken = result.NextToken
+    stocks = [...stocks, ...processStocksData(result.InventorySupplyList.member)]
   }
-  return mwsData.ListInventorySupplyResponse.ListInventorySupplyResult.InventorySupplyList.member.map(product => {
+  return stocks
+}
+
+function processStocksData(stockData) {
+  return stockData.map(product => {
     return {
       id: product.SellerSKU,
       quantity: product.InStockSupplyQuantity,
