@@ -42,28 +42,24 @@ async function updateStocks (id) {
     index: 'warehouses'
   })
   let res = {
-    id: warehouseId
+    warehouse: warehouseId
   }
   if (warehouse.found) {
     const lastUpdated = warehouse._source.stockLastUpdated || 1451602800000 // default to 01/01/2016
     const stocks = await getStocksData(lastUpdated, id.toUpperCase())
-    res.stocks = stocks
-    await setStockData(stocks, warehouse)
+    res.stockData = stocks
+    await setStockData(res)
   }
   return res
 }
 
-async function setStockData(stocks, warehouse) {
-  if (stocks.length === 0) {
+async function setStockData(payload) {
+  if (payload.stocks.length === 0) {
     return
   }
-  const event = {
-    stockData: stocks,
-    warehouse
-  }
   await lambda.invoke({
-    FunctionName: 'kaskadi-update-stocks-lambda',
-    Payload: JSON.stringify(event),
+    FunctionName: 'kaskadi-set-stocks-lambda',
+    Payload: JSON.stringify(payload),
     InvocationType: 'Event'
   }).promise()
 }
