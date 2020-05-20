@@ -31,7 +31,7 @@ module.exports.handler = async (event) => {
     ids = Object.keys(require('./marketplaces.js')).map(key => key.toLowerCase())
   }
   const stockMap = await Promise.all(ids.map(updateStocks))
-  res.body = JSON.stringify(stockMap.filter(data => data.stocks))
+  res.body = JSON.stringify(stockMap.filter(data => data.stockData))
   return res
 }
 
