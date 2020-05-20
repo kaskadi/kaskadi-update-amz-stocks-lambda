@@ -41,16 +41,16 @@ async function updateStocks (id) {
     id: warehouseId,
     index: 'warehouses'
   })
-  let res = {
+  let payload = {
     warehouse: warehouseId
   }
   if (warehouse.found) {
-    const lastUpdated = warehouse._source.stockLastUpdated || 1451602800000 // default to 01/01/2016
+    const lastUpdated = warehouse._source.stockLastUpdated || 1420066800000 // default to 01/01/2015
     const stocks = await getStocksData(lastUpdated, id.toUpperCase())
-    res.stockData = stocks
-    await setStockData(res)
+    payload.stockData = stocks
+    await setStockData(payload)
   }
-  return res
+  return payload
 }
 
 async function setStockData(payload) {
