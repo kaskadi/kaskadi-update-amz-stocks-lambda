@@ -13,5 +13,5 @@ module.exports = {
   TR: { name: 'Turkey', sc: 'TR', endpoint: 'mws-eu.amazonservices.com', id: 'A33AVAJ2PDY3EV' },
   AU: { name: 'Australia', sc: 'AU', endpoint: 'mws.amazonservices.com.au', id: 'A39IBJ37TRP1C6' },
   JP: { name: 'Japan', sc: 'JP', endpoint: 'mws.amazonservices.jp', id: 'A1VC38T7YXB528' },
-  CN: { name: 'China', sc: 'CN', endpoint: 'mws.amazonservices.com.cn', id: 'AAHKV2X7AFYLW' }
+  // CN: { name: 'China', sc: 'CN', endpoint: 'mws.amazonservices.com.cn', id: 'AAHKV2X7AFYLW' }
 }
