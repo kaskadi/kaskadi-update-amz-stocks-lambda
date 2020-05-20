@@ -74,7 +74,7 @@ async function getStocksData(lastUpdated, marketplace) {
   let result = response.ListInventorySupplyResult
   let NextToken = result.NextToken
   let stocks = [...processStocksData(result.InventorySupplyList.member)]
-  while (nextToken) {
+  while (NextToken) {
     const nextData = await MWS.fulfillmentInventory.listInventorySupplyByNextToken({
       NextToken,
       _marketplace: marketplace
