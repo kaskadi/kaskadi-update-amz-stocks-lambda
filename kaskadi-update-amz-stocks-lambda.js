@@ -30,12 +30,15 @@ module.exports.handler = async (event) => {
   } else {
     ids = Object.keys(require('./marketplaces.js')).map(key => key.toLowerCase())
   }
-  const stockMap = await Promise.all(ids.map(id => updateStocks(id, 500/ids.length)))
+  let stockMap = []
+  for (const id of ids) {
+    stockMap.push(await updateStocks(id))
+  }
   res.body = JSON.stringify(stockMap.filter(data => data.stockData))
   return res
 }
 
-async function updateStocks (id, restoreRate) {
+async function updateStocks (id) {
   const warehouseId = `amz_${id}` 
   const warehouse = await es.get({
     id: warehouseId,
@@ -46,7 +49,7 @@ async function updateStocks (id, restoreRate) {
   }
   if (warehouse.found) {
     const lastUpdated = warehouse._source.stockLastUpdated || 1420066800000 // default to 01/01/2015
-    const stocks = await getStocksData(lastUpdated, id.toUpperCase(), restoreRate)
+    const stocks = await getStocksData(lastUpdated, id.toUpperCase())
     payload.stockData = stocks
     await setStockData(payload)
   }
@@ -64,7 +67,8 @@ async function setStockData(payload) {
   }).promise()
 }
 
-async function getStocksData(lastUpdated, marketplace, restoreRate) {
+async function getStocksData(lastUpdated, marketplace) {
+  const restoreRate = 500 // 2 requests restored every seconds
   await new Promise((resolve, reject) => {setTimeout(resolve, restoreRate)}) // MWS throttling
   const mwsData = await MWS.fulfillmentInventory.listInventorySupply({
     QueryStartDateTime: new Date(lastUpdated).toISOString(),
