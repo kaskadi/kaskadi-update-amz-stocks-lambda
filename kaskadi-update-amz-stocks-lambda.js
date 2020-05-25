@@ -65,6 +65,7 @@ async function setStockData(payload) {
 }
 
 async function getStocksData(lastUpdated, marketplace, restoreRate) {
+  await new Promise((resolve, reject) => {setTimeout(resolve, restoreRate)}) // MWS throttling
   const mwsData = await MWS.fulfillmentInventory.listInventorySupply({
     QueryStartDateTime: new Date(lastUpdated).toISOString(),
     ResponseGroup: 'Basic',
@@ -75,7 +76,7 @@ async function getStocksData(lastUpdated, marketplace, restoreRate) {
   let NextToken = result.NextToken
   let stocks = [...processStocksData(result.InventorySupplyList.member)]
   while (NextToken) {
-    await new Promise((resolve, reject) => {setTimeout(resolve, restoreRate)}) // fit MWS throttling
+    await new Promise((resolve, reject) => {setTimeout(resolve, restoreRate)}) // MWS throttling
     const nextData = await MWS.fulfillmentInventory.listInventorySupplyByNextToken({
       NextToken,
       _marketplace: marketplace
