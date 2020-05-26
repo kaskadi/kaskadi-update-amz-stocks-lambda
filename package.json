@@ -23,6 +23,6 @@
   "homepage": "https://github.com/kaskadi/kaskadi-update-amz-stocks-lambda#readme",
   "devDependencies": {},
   "dependencies": {
-    "mws-client": "0.0.8"
+    "mws-client": "^1.0.0"
   }
 }
