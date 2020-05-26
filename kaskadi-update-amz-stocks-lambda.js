@@ -75,7 +75,7 @@ async function getStocksData(lastUpdated, marketplace) {
     ResponseGroup: 'Basic',
     _marketplace: marketplace
   })
-  let response = mwsData.ListInventorySupplyResponse
+  let response = mwsData.body.ListInventorySupplyResponse
   let result = response.ListInventorySupplyResult
   let NextToken = result.NextToken
   let stocks = [...processStocksData(result.InventorySupplyList.member)]
@@ -85,7 +85,7 @@ async function getStocksData(lastUpdated, marketplace) {
       NextToken,
       _marketplace: marketplace
     })
-    response = nextData.ListInventorySupplyByNextTokenResponse
+    response = nextData.body.ListInventorySupplyByNextTokenResponse
     result = response.ListInventorySupplyByNextTokenResult
     NextToken = result.NextToken
     stocks = [...stocks, ...processStocksData(result.InventorySupplyList.member)]
