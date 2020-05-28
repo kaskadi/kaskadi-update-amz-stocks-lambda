@@ -102,5 +102,3 @@ function processStocksData(stockData) {
     }
   })
 }
-
-// force
