@@ -1,6 +1,11 @@
 service:
   name: kaskadi-update-amz-stocks-lambda
 
+package:
+  individually: true
+  exclude:
+    - '**/**'
+
 provider:
   name: aws
   runtime: nodejs12.x
@@ -27,6 +32,9 @@ layers:
       - nodejs10.x
       - nodejs12.x
     licenseInfo: MIT
+    package:
+      include:
+        - 'layer/nodejs/**'
 
 functions:
   KaskadiStockUpdate:
@@ -35,9 +43,6 @@ functions:
     layers:
       - { Ref: KaskadiStockUpdateLambdaLayer }
     package:
-      individually: true
-      exclude:
-        - '**/**'
       include:
         - 'kaskadi-update-amz-stocks-lambda.js'
         - 'marketplaces.js'
