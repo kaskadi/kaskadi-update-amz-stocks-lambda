@@ -34,7 +34,7 @@ layers:
     licenseInfo: MIT
     package:
       include:
-        - 'layer/nodejs/**'
+        - '**/**'
 
 functions:
   KaskadiStockUpdate:
