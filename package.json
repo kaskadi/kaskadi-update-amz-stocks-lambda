@@ -20,9 +20,5 @@
   "bugs": {
     "url": "https://github.com/kaskadi/kaskadi-update-amz-stocks-lambda/issues"
   },
-  "homepage": "https://github.com/kaskadi/kaskadi-update-amz-stocks-lambda#readme",
-  "devDependencies": {},
-  "dependencies": {
-    "mws-client": "^1.0.0"
-  }
+  "homepage": "https://github.com/kaskadi/kaskadi-update-amz-stocks-lambda#readme"
 }

@@ -23,17 +23,28 @@ provider:
         - lambda:InvokeFunction
       Resource: 'arn:aws:lambda:eu-central-1:374163881813:function:kaskadi-set-stocks-lambda' # not using export/import logic to avoid coupling of stack which could cause troubles with deployment in that case
 
+layers:
+  KaskadiAmzStockUpdateLayer:
+    path: layer
+    name: ${self:service.name}-layer
+    description: Layer for ${self:service.name}
+    compatibleRuntimes:
+      - nodejs10.x
+      - nodejs12.x
+    licenseInfo: MIT
+
 functions:
-  KaskadiStockUpdate:
+  KaskadiAmzStockUpdate:
     handler: kaskadi-update-amz-stocks-lambda.handler
     name: ${self:service.name}
     layers:
-      - !ImportValue KaskadiEsLayerArn
+      - { Ref: KaskadiAmzStockUpdateLayer }
     package:
       include:
         - 'kaskadi-update-amz-stocks-lambda.js'
         - 'node_modules/**'
         - 'marketplaces.js'
+        - 'layer/**'
     environment:
       ES_ID: ${env:ES_ID}
       ES_SECRET: ${env:ES_SECRET}

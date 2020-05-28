@@ -40,10 +40,10 @@ module.exports.handler = async (event) => {
 
 async function updateStocks (id) {
   const warehouseId = `amz_${id}` 
-  const warehouse = await es.get({
+  const warehouse = (await es.get({
     id: warehouseId,
     index: 'warehouses'
-  })
+  })).body
   let payload = {
     warehouse: warehouseId
   }
