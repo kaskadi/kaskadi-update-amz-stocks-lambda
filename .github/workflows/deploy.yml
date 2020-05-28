@@ -9,6 +9,7 @@ on:
       - 'kaskadi-update-amz-stocks-lambda.js'
       - 'marketplaces.js'
       - 'package.json'
+      - 'layer/**'
 jobs:
   deploy:
     runs-on: ubuntu-latest
