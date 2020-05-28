@@ -24,7 +24,7 @@ provider:
       Resource: 'arn:aws:lambda:eu-central-1:374163881813:function:kaskadi-set-stocks-lambda' # not using export/import logic to avoid coupling of stack which could cause troubles with deployment in that case
 
 layers:
-  KaskadiStockUpdate:
+  KaskadiStockUpdateLayer:
     path: layer
     name: ${self:service.name}-layer
     description: Layer for ${self:service.name}
@@ -41,7 +41,7 @@ functions:
     handler: kaskadi-update-amz-stocks-lambda.handler
     name: ${self:service.name}
     layers:
-      - { Ref: KaskadiStockUpdateLambdaLayer }
+      - { Ref: KaskadiStockUpdateLayerLambdaLayer }
     package:
       include:
         - 'kaskadi-update-amz-stocks-lambda.js'
