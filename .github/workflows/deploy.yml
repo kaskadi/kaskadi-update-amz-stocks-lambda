@@ -20,6 +20,7 @@ jobs:
         npm i
         cd layer/nodejs
         npm i
+        cd ../../
     - name: serverless-check
       uses: kaskadi/action-slscli@master
       with:
