@@ -42,7 +42,6 @@ functions:
     package:
       include:
         - 'kaskadi-update-amz-stocks-lambda.js'
-        - 'node_modules/**'
         - 'marketplaces.js'
     environment:
       ES_ID: ${env:ES_ID}
