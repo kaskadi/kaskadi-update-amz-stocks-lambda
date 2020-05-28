@@ -15,9 +15,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Install dependencies
+    - name: Install lambda dependencies
+      run: npm i
+    - name: Install layer dependencies
       run: |
-        npm i
         cd layer/nodejs
         npm i
     - name: serverless-check
