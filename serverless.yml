@@ -44,7 +44,6 @@ functions:
         - 'kaskadi-update-amz-stocks-lambda.js'
         - 'node_modules/**'
         - 'marketplaces.js'
-        - 'layer/**'
     environment:
       ES_ID: ${env:ES_ID}
       ES_SECRET: ${env:ES_SECRET}
