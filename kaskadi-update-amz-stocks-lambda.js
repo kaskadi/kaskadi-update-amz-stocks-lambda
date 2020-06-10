@@ -60,16 +60,16 @@ async function setStockData(payload) {
   if (payload.stockData.length === 0) {
     return
   }
-  await lambda.invoke({
-    FunctionName: 'kaskadi-set-stocks-lambda',
-    Payload: JSON.stringify(payload),
-    InvocationType: 'Event'
-  }).promise()
+  // await lambda.invoke({
+  //   FunctionName: 'kaskadi-set-stocks-lambda',
+  //   Payload: JSON.stringify(payload),
+  //   InvocationType: 'Event'
+  // }).promise()
 }
 
 async function getStocksData(lastUpdated, marketplace) {
   const restoreRate = 500 // 2 requests restored every seconds
-  await new Promise((resolve, reject) => {setTimeout(resolve, restoreRate)}) // MWS throttling
+  await new Promise((resolve, reject) => setTimeout(resolve, restoreRate)) // MWS throttling
   const mwsData = await MWS.fulfillmentInventory.listInventorySupply({
     QueryStartDateTime: new Date(lastUpdated).toISOString(),
     ResponseGroup: 'Basic',
@@ -80,7 +80,7 @@ async function getStocksData(lastUpdated, marketplace) {
   let NextToken = result.NextToken
   let stocks = [...processStocksData(result.InventorySupplyList.member)]
   while (NextToken) {
-    await new Promise((resolve, reject) => {setTimeout(resolve, restoreRate)}) // MWS throttling
+    await new Promise((resolve, reject) => setTimeout(resolve, restoreRate)) // MWS throttling
     const nextData = await MWS.fulfillmentInventory.listInventorySupplyByNextToken({
       NextToken,
       _marketplace: marketplace
@@ -96,7 +96,7 @@ async function getStocksData(lastUpdated, marketplace) {
 function processStocksData(stockData) {
   return stockData.map(product => {
     return {
-      id: product.SellerSKU,
+      id: product.ASIN,
       quantity: product.InStockSupplyQuantity,
       condition: product.Condition
     }
