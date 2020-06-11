@@ -61,11 +61,11 @@ async function setStockData(payload) {
   if (payload.stockData.length === 0) {
     return
   }
-  // await lambda.invoke({
-  //   FunctionName: 'kaskadi-set-stocks-lambda',
-  //   Payload: JSON.stringify(payload),
-  //   InvocationType: 'Event'
-  // }).promise()
+  await lambda.invoke({
+    FunctionName: 'kaskadi-set-stocks-lambda',
+    Payload: JSON.stringify(payload),
+    InvocationType: 'Event'
+  }).promise()
 }
 
 async function getStocksData(lastUpdated, marketplace) {
