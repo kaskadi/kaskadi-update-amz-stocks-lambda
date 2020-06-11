@@ -45,7 +45,7 @@ async function updateStocks (id) {
     index: 'warehouses'
   })).body
   let payload = {
-    provider: 'amz',
+    idType: 'ASIN',
     warehouse: warehouseId
   }
   if (warehouse.found) {
