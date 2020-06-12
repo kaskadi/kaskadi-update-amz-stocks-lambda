@@ -1,16 +1,3 @@
-const AWS = require('aws-sdk')
-const lambda = new AWS.Lambda({region: 'eu-central-1'})
-const es = require('aws-es-client')({
-  id: process.env.ES_ID,
-  token: process.env.ES_SECRET,
-  url: process.env.ES_ENDPOINT
-})
-const MWS = require('mws-client')({
-  AWSAccessKeyId: process.env.ACCESS_KEY,
-  SellerId: process.env.SELLER_ID,
-  MWSAuthToken: process.env.MWS_AUTH_TOKEN
-})
-
 module.exports.handler = async (event) => {
   let ids
   let res = {
@@ -41,6 +28,11 @@ module.exports.handler = async (event) => {
 }
 
 async function getStocks (id) {
+  const es = require('aws-es-client')({
+    id: process.env.ES_ID,
+    token: process.env.ES_SECRET,
+    url: process.env.ES_ENDPOINT
+  })
   const warehouseId = `amz_${id}` 
   const warehouse = (await es.get({
     id: warehouseId,
@@ -63,6 +55,8 @@ async function setStockData(payload) {
   if (payload.stockData.length === 0) {
     return
   }
+  const AWS = require('aws-sdk')
+  const lambda = new AWS.Lambda({region: 'eu-central-1'})
   await lambda.invoke({
     FunctionName: 'kaskadi-set-stocks-lambda',
     Payload: JSON.stringify(payload),
@@ -71,6 +65,7 @@ async function setStockData(payload) {
 }
 
 async function getStocksData(lastUpdated, marketplace) {
+  const MWS = require('mws-client')({ AWSAccessKeyId: process.env.ACCESS_KEY, SellerId: process.env.SELLER_ID, MWSAuthToken: process.env.MWS_AUTH_TOKEN })
   const restoreRate = 500 // 2 requests restored every seconds
   await new Promise((resolve, reject) => setTimeout(resolve, restoreRate)) // MWS throttling
   const mwsData = await MWS.fulfillmentInventory.listInventorySupply({
@@ -84,10 +79,7 @@ async function getStocksData(lastUpdated, marketplace) {
   let stocks = [...processStocksData(result.InventorySupplyList.member)]
   while (NextToken) {
     await new Promise((resolve, reject) => setTimeout(resolve, restoreRate)) // MWS throttling
-    const nextData = await MWS.fulfillmentInventory.listInventorySupplyByNextToken({
-      NextToken,
-      _marketplace: marketplace
-    })
+    const nextData = await MWS.fulfillmentInventory.listInventorySupplyByNextToken({ NextToken, _marketplace: marketplace })
     response = nextData.body.ListInventorySupplyByNextTokenResponse
     result = response.ListInventorySupplyByNextTokenResult
     NextToken = result.NextToken
