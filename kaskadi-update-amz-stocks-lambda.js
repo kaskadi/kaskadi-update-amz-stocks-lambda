@@ -30,15 +30,17 @@ module.exports.handler = async (event) => {
   } else {
     ids = Object.keys(require('./marketplaces.js')).map(key => key.toLowerCase())
   }
-  let stockMap = []
+  let stocks = []
   for (const id of ids) {
-    stockMap.push(await updateStocks(id))
+    const stock = await getStocks(id)
+    stocks.push(stock)
+    await setStockData(stock)
   }
-  res.body = JSON.stringify(stockMap.filter(data => data.stockData))
+  res.body = JSON.stringify(stocks.filter(stock => stock.stockData))
   return res
 }
 
-async function updateStocks (id) {
+async function getStocks (id) {
   const warehouseId = `amz_${id}` 
   const warehouse = (await es.get({
     id: warehouseId,
