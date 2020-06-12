@@ -75,7 +75,7 @@ async function getStocksData(lastUpdated, marketplace) {
   let response = mwsData.body.ListInventorySupplyResponse
   let result = response.ListInventorySupplyResult
   let NextToken = result.NextToken
-  let stocks = [...processStocksData(result.InventorySupplyList.member)]
+  let stocks = result.InventorySupplyList.member ? [...processStocksData(result.InventorySupplyList.member)] : []
   while (NextToken) {
     await new Promise((resolve, reject) => setTimeout(resolve, restoreRate)) // MWS throttling
     const nextData = await MWS.fulfillmentInventory.listInventorySupplyByNextToken({ NextToken, _marketplace: marketplace })
