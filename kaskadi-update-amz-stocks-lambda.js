@@ -46,7 +46,6 @@ async function getStocks (id) {
     const lastUpdated = warehouse._source.stockLastUpdated || 1420066800000 // default to 01/01/2015
     const stocks = await getStocksData(lastUpdated, id.toUpperCase())
     payload.stockData = stocks
-    await setStockData(payload)
   }
   return payload
 }
