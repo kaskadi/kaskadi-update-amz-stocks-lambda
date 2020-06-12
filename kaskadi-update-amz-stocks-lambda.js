@@ -91,7 +91,7 @@ function processStocksData(stockData) {
   return stockData.map(product => {
     return {
       id: product.ASIN,
-      quantity: product.InStockSupplyQuantity,
+      quantity: Number(product.InStockSupplyQuantity),
       condition: product.Condition
     }
   })
