@@ -16,7 +16,7 @@ function removeDuplicatedStock (stock) {
 function getStockDataForId (stockData) {
   return id => {
     const dataOccurences = stockData.filter(stock => stock.id === id)
-    return dataOccurences.length === 1 ? dataOccurences[0] : dataOccurences.filter(data => data.sku[data.sku.length - 4].toLowerCase() === '-new') 
+    return dataOccurences.length === 1 ? dataOccurences[0] : dataOccurences.filter(data => data.sku.substring(data.sku.length - 4).toLowerCase() === '-new')[0] 
   }
 }
 
