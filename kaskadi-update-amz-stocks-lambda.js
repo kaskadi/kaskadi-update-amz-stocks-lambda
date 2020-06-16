@@ -1,6 +1,7 @@
 module.exports.handler = async (event) => {
   const getCountryIds = require('./helpers/get-country-ids.js')
   const getStocks = require('./helpers/get-stocks.js')
+  const filterStocks = require('./helpers/filter-stocks.js')
   const setStocks = require('./helpers/set-stocks.js')
   const countryIds = getCountryIds(event.queryStringParameters)
   if (countryIds.length === 0) {
@@ -12,5 +13,5 @@ module.exports.handler = async (event) => {
       body: JSON.stringify({ message: `Please provide a country code in your query string.` })
     }
   }
-  return await getStocks(countryIds).then(setStocks)
+  return await getStocks(countryIds).then(stocks => setStocks(filterStocks(stocks)))
 }
