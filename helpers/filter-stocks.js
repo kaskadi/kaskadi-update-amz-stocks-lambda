@@ -16,18 +16,24 @@ function removeDuplicatedStock (stock) {
 function getStockDataForId (stockData) {
   return id => {
     const dataOccurences = stockData.filter(stock => stock.id === id)
+    const filteredData = dataOccurences.length === 1 ? dataOccurences[0] : dataOccurences.filter(filterDataOccurences)[0]
+    if (!filteredData) {
+      console.log(id)
+      console.log(dataOccurences)
+      console.log(dataOccurences.map(data => data.quantity))
+    }
     return dataOccurences.length === 1 ? dataOccurences[0] : dataOccurences.filter(filterDataOccurences)[0] 
   }
 }
 
 function filterDataOccurences (data) {
-  return (filterBySku(sku)) || data.quantity > 0
+  return (filterBySku(data.sku)) || data.quantity > 0
 }
 
 function filterBySku (sku) {
   // SKUs should contains 'NEW' at the end and have at least 4 sections delimited by '-'
   const skuSplit = sku.split('-')
-  return skuSplit.length > 3 && skuSplit[skuSplit.length - 1].toLowerCase().includes('-new')
+  return skuSplit.length > 3 && skuSplit[skuSplit.length - 1].toLowerCase().includes('new')
 }
 
 function removeSkuField (stock) {

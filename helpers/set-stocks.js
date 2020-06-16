@@ -8,12 +8,14 @@ module.exports = async (stocks) => {
       'Access-Control-Allow-Origin': '*'
     }
   }
-  if (stocks.length === 0) {
-    res.statusCode = 404
-    res.body = JSON.stringify({ message: 'No warehouses were found for the given country code.' })
-    return res
-  }
-  await Promise.all(stocks.map(setStocksForId))
+  // if (stocks.length === 0) {
+  //   res.statusCode = 404
+  //   res.body = JSON.stringify({ message: 'No warehouses were found for the given country code.' })
+  //   return res
+  // }
+  // await Promise.all(stocks.map(setStocksForId))
+  // for test purpose
+  console.log(JSON.stringify(stocks, null, 2))
   res.body = JSON.stringify(stocks)
   return res
 }
