@@ -1,4 +1,4 @@
-// we need to filter our stocks data because over time some products saw their SKUs edited manually to be able to relist product while reusing EAN/ASIN. This means that only products whose SellerSKU ends with "-new" (non-case sensitive!) are the ones for which we should consider stock changes for a given EAN/ASIN
+// we need filtering because over time some products got listed multiple time with the same ASIN/EAN
 module.exports = (stocks) => {
   return stocks.map(removeDuplicatedStock).map(removeSkuField)
 }
@@ -16,12 +16,27 @@ function removeDuplicatedStock (stock) {
 function getStockDataForId (stockData) {
   return id => {
     const dataOccurences = stockData.filter(stock => stock.id === id)
-    return dataOccurences.length === 1 ? dataOccurences[0] : dataOccurences.filter(data => data.sku.substring(data.sku.length - 4).toLowerCase() === '-new')[0] 
+    return dataOccurences.length === 1 ? dataOccurences[0] : dataOccurences.filter(filterDataOccurences)[0] 
   }
 }
 
+function filterDataOccurences (data) {
+  return (filterBySku(sku)) || data.quantity > 0
+}
+
+function filterBySku (sku) {
+  // SKUs should contains 'NEW' at the end and have at least 4 sections delimited by '-'
+  const skuSplit = sku.split('-')
+  return skuSplit.length > 3 && skuSplit[skuSplit.length - 1].toLowerCase().includes('-new')
+}
+
 function removeSkuField (stock) {
-  const noSkuStock = { ...stock }
-  delete noSkuStock.sku
-  return noSkuStock
+  return {
+    ...stock,
+    stockData: stock.stockData.map(data => {
+      const noSkuStockData = { ...data }
+      delete noSkuStockData.sku
+      return noSkuStockData
+    })
+  }
 }
