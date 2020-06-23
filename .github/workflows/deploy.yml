@@ -6,7 +6,7 @@ on:
       - 'release/**'
     paths:
       - 'serverless.yml'
-      - 'kaskadi-update-amz-stocks-lambda.js'
+      - 'update-amz-stocks.js'
       - 'helpers/**'
       - 'marketplaces.js'
       - 'package.json'
@@ -39,7 +39,7 @@ jobs:
     - name: serverless-deploy
       uses: kaskadi/action-slscli@master
       with:
-        command: 'deploy -v'
+        command: '--version'
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_KEY_SECRET }}
