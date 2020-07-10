@@ -51,9 +51,9 @@ functions:
       ES_ID: ${env:ES_ID}
       ES_SECRET: ${env:ES_SECRET}
       ES_ENDPOINT: ${env:ES_ENDPOINT}
-      ACCESS_KEY: ${env:AWS_ACCESS_KEY}
-      SELLER_ID: ${env:SELLER_ID}
-      MWS_AUTH_TOKEN: ${env:MWS_AUTH_TOKEN}
+      MWS_KEY_ID: ${env:MWS_KEY_ID}
+      MWS_KEY_SECRET: ${env:MWS_KEY_SECRET}
+      AMZ_EU_SELLER_ID: ${env:AMZ_EU_SELLER_ID}
     timeout: 300
     events:
       - http:
